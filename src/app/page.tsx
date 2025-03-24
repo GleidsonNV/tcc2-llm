@@ -1,101 +1,93 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useState } from 'react';
+import { useChat } from '@ai-sdk/react';
+import { Container, TextField, Button, Paper, Typography, IconButton, Box, ThemeProvider, createTheme, CssBaseline, useColorScheme } from '@mui/material';
+import { Brightness4, Brightness7 } from '@mui/icons-material';
+import { Head } from 'next/document';
+
+//TODO: markdown support 
+//TODO: introduzir google gemini
+//TODO: melhorarar visualização da mensagem do bot/usuário
+//TODO: Dar feedback enquanto chat estiver gerando a resposta
+const Chat = () => {
+  const { messages, input, handleInputChange, handleSubmit } = useChat();
+
+  const { mode, setMode } = useColorScheme();
+  if (!mode) {
+    return null;
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+      <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', padding: 1 }}>
+          <IconButton onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')} color="inherit">
+            {mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
+          </IconButton>
+        </Box>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+        <Container sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', padding: 2, maxWidth: 'lg' }}>
+          <Box sx={{ flexGrow: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column-reverse' }}>
+            {messages.map((message, index) => (
+              <Paper
+                key={index}
+                sx={{
+                  marginBottom: 1,
+                  padding: 2,
+                  backgroundColor: message.role === 'user' ? 'primary.main' : 'secondary.main',
+                  color: 'text.primary',
+                  borderRadius: 2,
+                  maxWidth: '75%',
+                  alignSelf: message.role === 'user' ? 'flex-end' : 'flex-start',
+                }}
+              >
+                <Typography variant="body1">{message.content}</Typography>
+              </Paper>
+            ))}
+          </Box>
+
+          <Box sx={{ display: 'flex', gap: 2, marginTop: 2 }}>
+            <TextField
+              fullWidth
+              multiline
+              label="Descreva seu problema"
+              variant="outlined"
+              value={input}
+              onChange={handleInputChange}
+              sx={{ backgroundColor: 'background.paper' }}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+              sx={{ height: '100%' }}
+            >
+              Enviar
+            </Button>
+          </Box>
+        </Container>
+      </Box>
   );
-}
+};
+
+const theme = createTheme({
+  colorSchemes: {
+    dark: true,
+  },
+});
+
+export default function ToggleColorMode() {
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline /> 
+      <Head>
+        <title>Titulo da aplicação</title>
+        <meta name="description" content="Um chatbot gerador de requisitos funcionais" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta charSet="UTF-8" />
+      </Head>
+      <Chat />
+    </ThemeProvider>
+  );
+};
+
