@@ -1,6 +1,6 @@
 import { generateText, streamText } from 'ai';
 import { myProvider, DEFAULT_CHAT_MODEL } from '../../../../lib/ai/models';
-import { extractUserProblem, generateProblemKnowledge, generateRequirements, systemExtractor, systemRequirementsEngineer } from '../../../../lib/ai/prompt';
+import { extractUserProblem, generateProblemKnowledge, generateRequirements, generateSpecificDomain, systemBirdEye, systemExtractor, systemRequirementsEngineer } from '../../../../lib/ai/prompt';
 
 export const maxDuration = 30;
 
@@ -18,11 +18,21 @@ export async function POST(req: Request) {
   console.log(`User problem : ${extractProblem.text}`);
   
 
+  const problemDomain = await generateText({
+    model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
+    temperature: 0.2,
+    maxSteps: 5,
+    prompt: generateSpecificDomain(extractProblem.text),
+    system: systemBirdEye
+  });
+
+  console.log(`Problem domain : ${problemDomain.text}`);
+
   const problemKnowledge = await generateText({
     model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
-    temperature: 0.4,
+    temperature: 0.3,
     maxSteps: 5,
-    prompt: generateProblemKnowledge(extractProblem.text),
+    prompt: generateProblemKnowledge(problemDomain.text),
     system: systemExtractor
   });
 
@@ -30,7 +40,7 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
-    temperature: 0.6,
+    temperature: 0.8,
     maxSteps: 5,
     system: systemRequirementsEngineer,
     prompt: generateRequirements(problemKnowledge.text, extractProblem.text, messages[0].content)
