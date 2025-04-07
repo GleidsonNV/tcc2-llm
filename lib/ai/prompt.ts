@@ -62,4 +62,4 @@ Stakeholder: Nossa pesquisa indica que o mercado de sistemas de gerenciamento do
 Engenheiro de requisitos: Então uma funcionalidade desse sistema seria - O proprietário observa o painel de controle do SafeHome para determinar se o sistema está pronto para receber entrada. Se o sistema não estiver pronto, uma mensagem de "não pronto" é exibida no visor LCD, e o proprietário deve fechar fisicamente as janelas ou portas para que a mensagem de "não pronto" desapareça. (Uma mensagem de "não pronto" implica que um sensor está aberto, ou seja, que uma porta ou janela está aberta.)
 
 Stakeholder: ${userInput}
-Engenheiro de requisitos: Considerando ${domainKnowledge}, o problema é ${problem}. Então todos os requisitos, e somente os requisitos, são:`;
+Engenheiro de requisitos: Considerando ${domainKnowledge}, o problema é ${problem}. Então todos os requisitos funcionais exaustivamente, e somente os requisitos funcionais, são:`;

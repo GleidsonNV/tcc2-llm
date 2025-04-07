@@ -4,12 +4,12 @@ import { useState } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { Container, TextField, Button, Paper, Typography, IconButton, Box, ThemeProvider, createTheme, CssBaseline, useColorScheme } from '@mui/material';
 import { Brightness4, Brightness7 } from '@mui/icons-material';
-import { Head } from 'next/document';
+import { MemoizedMarkdown } from '../../components/memoized-markdown';
 
-//TODO: markdown support 
 //TODO: introduzir google gemini
 //TODO: melhorarar visualização da mensagem do bot/usuário
 //TODO: Dar feedback enquanto chat estiver gerando a resposta
+//TODO: guardrail
 const Chat = () => {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
 
@@ -41,7 +41,7 @@ const Chat = () => {
                   alignSelf: message.role === 'user' ? 'flex-end' : 'flex-start',
                 }}
               >
-                <Typography variant="body1">{message.content}</Typography>
+                <MemoizedMarkdown content={message.content} id={message.id} />
               </Paper>
             ))}
           </Box>
@@ -74,18 +74,25 @@ const theme = createTheme({
   colorSchemes: {
     dark: true,
   },
+  palette: {
+    primary: {
+      main: '#4d4443',
+      light: '#4c49a8',
+      dark: '#4d4443',
+    },
+    secondary: {
+      main: '#434c4d',
+      light: '#4975a8',
+      dark: '#434c4d',
+    },
+  }
 });
 
 export default function ToggleColorMode() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline /> 
-      <Head>
-        <title>Titulo da aplicação</title>
-        <meta name="description" content="Um chatbot gerador de requisitos funcionais" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta charSet="UTF-8" />
-      </Head>
+     
       <Chat />
     </ThemeProvider>
   );
