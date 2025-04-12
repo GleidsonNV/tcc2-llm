@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import { useChat } from '@ai-sdk/react';
-import { Container, TextField, Button, Paper, Typography, IconButton, Box, ThemeProvider, createTheme, CssBaseline, useColorScheme } from '@mui/material';
+import { Container, TextField, Button, Paper, IconButton, Box, ThemeProvider, createTheme, CssBaseline, useColorScheme } from '@mui/material';
 import { Brightness4, Brightness7 } from '@mui/icons-material';
 import { MemoizedMarkdown } from '../../components/memoized-markdown';
 
@@ -34,7 +33,7 @@ const Chat = () => {
                 sx={{
                   marginBottom: 1,
                   padding: 2,
-                  backgroundColor: message.role === 'user' ? 'primary.main' : 'secondary.main',
+                  backgroundColor: message.role === 'user' ? 'palette.background.paper' : '',
                   color: 'text.primary',
                   borderRadius: 2,
                   maxWidth: '75%',
@@ -58,9 +57,8 @@ const Chat = () => {
             />
             <Button
               variant="contained"
-              color="primary"
               onClick={handleSubmit}
-              sx={{ height: '100%' }}
+              sx={{ height: '100%'}}
             >
               Enviar
             </Button>
@@ -77,13 +75,13 @@ const theme = createTheme({
   palette: {
     primary: {
       main: '#4d4443',
-      light: '#4c49a8',
-      dark: '#4d4443',
+      // light: '#4c49a8',
+      // dark: '#4d4443',
     },
     secondary: {
       main: '#434c4d',
-      light: '#4975a8',
-      dark: '#434c4d',
+      // light: '#4975a8',
+      // dark: '#434c4d',
     },
   }
 });
@@ -92,7 +90,6 @@ export default function ToggleColorMode() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline /> 
-     
       <Chat />
     </ThemeProvider>
   );

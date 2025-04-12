@@ -19,7 +19,7 @@ Problema: O desconhecido precisa ver informações de horas seus funcionários, 
 input: ${userInput}. 
 Problema: `
 
-export const generateProblemKnowledge = (problemDomain: String) =>`Input: A Grécia é maior que o México.
+export const generateProblemKnowledge = (problemDomain: string) =>`Input: A Grécia é maior que o México.
 Conhecimento: A Grécia tem aproximadamente 131.957 km², enquanto o México tem aproximadamente 1.964.375 km², tornando o México 1.389% maior que a Grécia.
 
 Input: Os óculos sempre embaçam.
@@ -62,4 +62,18 @@ Stakeholder: Nossa pesquisa indica que o mercado de sistemas de gerenciamento do
 Engenheiro de requisitos: Então uma funcionalidade desse sistema seria - O proprietário observa o painel de controle do SafeHome para determinar se o sistema está pronto para receber entrada. Se o sistema não estiver pronto, uma mensagem de "não pronto" é exibida no visor LCD, e o proprietário deve fechar fisicamente as janelas ou portas para que a mensagem de "não pronto" desapareça. (Uma mensagem de "não pronto" implica que um sensor está aberto, ou seja, que uma porta ou janela está aberta.)
 
 Stakeholder: ${userInput}
-Engenheiro de requisitos: Considerando ${domainKnowledge}, o problema é ${problem}. Então todos os requisitos funcionais exaustivamente, e somente os requisitos funcionais, são:`;
+Engenheiro de requisitos: Considerando ${domainKnowledge}, o problema é ${problem}. Então todos os requisitos funcionais exaustivamente, são: . Remova tudo que não for requisito funcional.`;
+
+export const getGuardrail = (userProblem:string) => `
+Suposto problema: Não consigo pegar uma maçã.
+Avaliação: <SEM PROBLEMA>.Não é um problema de negócio. Pegar uma maçã é um problema trivial no máximo e não deve ser considerado.
+
+Suposto problema: Oi.
+Avaliação: <SEM PROBLEMA>. É o ínicio de uma conversa e não um problema.
+
+Suposto problema: Me ajude a escrever uma tese.
+Avaliação: <SEM PROBLEMA>. Não é um problema de negócio, já que uma tese é acadêmica e não é do interesse de corporações resolver teses.
+
+Suposto problema: ${userProblem}
+Avaliação: 
+`;
