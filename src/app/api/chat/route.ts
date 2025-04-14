@@ -2,7 +2,6 @@ import { generateObject, generateText, streamText } from 'ai';
 import { myProvider, DEFAULT_CHAT_MODEL } from '../../../../lib/ai/models';
 import { extractUserProblem, generateProblemKnowledge, generateRequirements, generateSpecificDomain, getGuardrail, systemBirdEye, systemExtractor, systemRequirementsEngineer } from '../../../../lib/ai/prompt';
 import {z} from 'zod';
-import { log } from 'node:console';
 
 export const maxDuration = 30;
 
