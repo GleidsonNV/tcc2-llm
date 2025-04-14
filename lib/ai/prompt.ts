@@ -77,3 +77,6 @@ Avaliação: <SEM PROBLEMA>. Não é um problema de negócio, já que uma tese �
 Suposto problema: ${userProblem}
 Avaliação: 
 `;
+
+
+//TODO: customer service prompt

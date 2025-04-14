@@ -1,6 +1,8 @@
-import { generateText, streamText } from 'ai';
+import { generateObject, generateText, streamText } from 'ai';
 import { myProvider, DEFAULT_CHAT_MODEL } from '../../../../lib/ai/models';
-import { extractUserProblem, generateProblemKnowledge, generateRequirements, generateSpecificDomain, systemBirdEye, systemExtractor, systemRequirementsEngineer } from '../../../../lib/ai/prompt';
+import { extractUserProblem, generateProblemKnowledge, generateRequirements, generateSpecificDomain, getGuardrail, systemBirdEye, systemExtractor, systemRequirementsEngineer } from '../../../../lib/ai/prompt';
+import {z} from 'zod';
+import { log } from 'node:console';
 
 export const maxDuration = 30;
 
@@ -28,6 +30,32 @@ export async function POST(req: Request) {
 
   console.log(`Problem domain : ${problemDomain.text}`);
 
+  const {object} = await generateObject({
+    model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
+    schema: z.object({
+      reasoning: z.string(),
+      isProblem: z.boolean()
+    }),
+    temperature: 0.2,
+    prompt: getGuardrail(problemDomain.text),
+    system: systemBirdEye
+  })
+
+  console.log("test guardrail", object);
+
+  //TODO: responder para o usuário inserir um problema
+  // if(object.isProblem){
+  //   const userResponse = await generateText({
+  //     model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
+  //     temperature: 0.2,
+  //     maxSteps: 5,
+  //     prompt: ,
+  //     system: systemBirdEye
+  //   })
+  //   return
+  // }
+  
+
   const problemKnowledge = await generateText({
     model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
     temperature: 0.3,
@@ -37,6 +65,18 @@ export async function POST(req: Request) {
   });
 
   console.log(`Problem knowledge : ${problemKnowledge.text}`);
+
+  // const {testObject} = await generateObject({
+
+  //   model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
+  //   output: 'array',
+  //   schema: z.object({
+  //     requisitos: z.string()
+  //   }),
+  //   temperature: 0.8,
+  //   system: systemRequirementsEngineer,
+  //   prompt: generateRequirements(problemKnowledge.text, extractProblem.text, messages[0].content)
+  // })
 
   const result = streamText({
     model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
