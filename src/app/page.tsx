@@ -8,7 +8,8 @@ import { MemoizedMarkdown } from '../../components/memoized-markdown';
 //TODO: introduzir google gemini
 //TODO: melhorarar visualização da mensagem do bot/usuário
 //TODO: Dar feedback enquanto chat estiver gerando a resposta
-//TODO: guardrail
+//TODO: guardrail - testar
+//TODO: executar geração de objeto no onFinish() do usechat?
 const Chat = () => {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
 
