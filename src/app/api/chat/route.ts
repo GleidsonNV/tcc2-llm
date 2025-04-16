@@ -7,6 +7,8 @@ export const maxDuration = 30;
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
+  let attempts  = 0;
+  const MAX_ITERATIONS = 3;
 
   const extractProblem = await generateText({
     model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
@@ -42,17 +44,16 @@ export async function POST(req: Request) {
 
   console.log("test guardrail", object);
 
-  //TODO: responder para o usuário inserir um problema
-  // if(object.isProblem){
-  //   const userResponse = await generateText({
-  //     model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
-  //     temperature: 0.2,
-  //     maxSteps: 5,
-  //     prompt: ,
-  //     system: systemBirdEye
-  //   })
-  //   return
-  // }
+  if(object.isProblem){
+    const userResponse = await streamText({
+      model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
+      temperature: 1,
+      maxSteps: 5,
+      prompt: `Solicite ao usuário para entrar com o problema novamente e explique que não foi possível identificar um problema.`,
+      system: systemBirdEye
+    })
+    return userResponse.toDataStreamResponse();
+  }
   
 
   const problemKnowledge = await generateText({
@@ -76,6 +77,31 @@ export async function POST(req: Request) {
   //   system: systemRequirementsEngineer,
   //   prompt: generateRequirements(problemKnowledge.text, extractProblem.text, messages[0].content)
   // })
+
+  //TODO: avaliar os requisitos gerados
+  // do {
+  //   const requirements = generateText({
+  //     model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
+  //     temperature: 0.8,
+  //     maxSteps: 5,
+  //     system: systemRequirementsEngineer,
+  //     prompt: generateRequirements(problemKnowledge.text, extractProblem.text, messages[0].content)
+  //   });
+
+  //   const {object} = await generateObject({
+  //     model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
+  //     schema: z.object({
+  //       reasoning: z.string(),
+  //       score: z.object({
+
+  //       })
+  //       isSuitable: z.boolean()
+  //     }),
+  //     temperature: 0.2,
+  //     prompt: getRequirementsEvaluation(requirements.text),
+  //     system: systemEvaluator
+  //   })
+  // } while (attempts < MAX_ITERATIONS);
 
   const result = streamText({
     model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
