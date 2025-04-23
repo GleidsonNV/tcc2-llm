@@ -9,6 +9,17 @@ Todos eles facilitam a implementação por parte do time de desenvolvedores, ele
 
 export const systemBirdEye = `Você é um grande generalista que consegue identificar áreas de atuação profissional específicas a partir de uma conversa.`;
 
+export const systemEvaluator = `Você é um experiente engenheiro de requisitos com vasto conhecimento sobre diversos domínios de negócio. Você avalia requisitos de acordo com a ISO 29148 nos critérios:
+Apropriado - O nível de abstração é adequado, exclui restrições desnecessárias e evita detalhes de implementação.
+Completo - Todas as informações necessárias para entender o requisito estão incluídas na descrição.
+Conforme - A representação do requisito segue um modelo padrão aprovado.
+Correto - A necessidade está representada com precisão no requisito.
+Viável - O requisito é realizável dentro das restrições do sistema, considerando um risco aceitável.
+Necessário - O requisito define um aspecto essencial do sistema e é irremovível sem causar uma deficiência.
+Singular - O requisito define apenas um aspecto do sistema.
+Não ambíguo - O requisito está claramente declarado, é compreensível e permite apenas uma interpretação.
+Verificável - O requisito está formulado de maneira que seu cumprimento possa ser comprovado ou, na melhor das hipóteses, medido.`;
+
 export const extractUserProblem = (userInput:string) => 
     `input: Como um usuario da comunidade, desejo notificar os interessados sobre pista molhada para evitar acidentes. 
 Problema: O integrante da comunidade precisa avisar às pessoas que fazem parte da comunidade sobre a pista molhada, então o problema dele é notificar várias pessoas sobre um evento
@@ -78,5 +89,15 @@ Suposto problema: ${userProblem}
 Avaliação: 
 `;
 
+export const getRequirementsEvaluation = (requirements: string) => `
+Requisito: O aplicativo deve permitir que os usuários iniciem o cronômetro tocando em um botão "Iniciar" destacado.
+Avaliação: O requisito não é completo, singular e apropriado, mas é correto, não ambíguo, viável, conforme, necessário e verificável. Isso porque não se deve dizer a implementação em um requisito e por causa disso não é singular. Fora isso é fácil verificar se o requisito foi cumprido, é claro, necessário para um sistema de cronômetro e conforme as normas de requisitos.
 
-//TODO: customer service prompt
+Requisito: O aplicativo deve fornecer uma opção para tempos de volta, permitindo que os usuários insiram manualmente o tempo de cada volta e o exibam junto ao tempo total decorrido.
+Avaliação: O requisito não é completo, conforme, correto, não ambíguo e verificável. Mas é viável, necessário, singular e apropriado. Isso porque não é claro que é tempo de volta, e por isso não tem como verificar se o requisito foi implementado. Também por causa da falta de clareza ele não é completo nem correto. Apesar disso é singular por ser o requisito de uma funcionalidade apenas, necessário ao sistema de cronômetro e viável de ser implementado.
+
+Requisito: O aplicativo deve exibir o tempo total decorrido desde o último reset.
+Avaliação: O requisito não é verificável e nem completo e não ambíguo. Mas é viável, singular, necessário, correto e conforme. Isso porque não tem como verificar qual tempo decorrido desde o último reset nesse requisito, também porque não tem explicado o que é um reset e por caus disso também é ambíguo. Apesar disso, é singular por especificar apenas uma requisito, viável de implementar, necessário a um sistema de cronômetro, correto por apresentar tudo que será necessário para pensar em uma implementação e dentro das normas de especificação de requisitos.
+
+Requisito: ${requirements}
+Avaliação: `;

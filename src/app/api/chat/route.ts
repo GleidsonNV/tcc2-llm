@@ -1,6 +1,6 @@
 import { generateObject, generateText, streamText } from 'ai';
 import { myProvider, DEFAULT_CHAT_MODEL } from '../../../../lib/ai/models';
-import { extractUserProblem, generateProblemKnowledge, generateRequirements, generateSpecificDomain, getGuardrail, systemBirdEye, systemExtractor, systemRequirementsEngineer } from '../../../../lib/ai/prompt';
+import { extractUserProblem, generateProblemKnowledge, generateRequirements, generateSpecificDomain, getGuardrail, getRequirementsEvaluation, systemBirdEye, systemEvaluator, systemExtractor, systemRequirementsEngineer } from '../../../../lib/ai/prompt';
 import {z} from 'zod';
 
 export const maxDuration = 30;
@@ -77,39 +77,55 @@ export async function POST(req: Request) {
   //   system: systemRequirementsEngineer,
   //   prompt: generateRequirements(problemKnowledge.text, extractProblem.text, messages[0].content)
   // })
+  let requirements;
+  do {
+     requirements = await generateText({
+      model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
+      temperature: 0.8,
+      maxSteps: 5,
+      system: systemRequirementsEngineer,
+      prompt: generateRequirements(problemKnowledge.text, extractProblem.text, messages[0].content)
+    });
 
-  //TODO: avaliar os requisitos gerados
-  // do {
-  //   const requirements = generateText({
-  //     model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
-  //     temperature: 0.8,
-  //     maxSteps: 5,
-  //     system: systemRequirementsEngineer,
-  //     prompt: generateRequirements(problemKnowledge.text, extractProblem.text, messages[0].content)
-  //   });
+    const {object} = await generateObject({
+      model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
+      schema: z.object({
+        reasoning: z.string(),
+        score: z.object({
+          appropriate: z.boolean(),
+          complete: z.boolean(),
+          conforming: z.boolean(),
+          correct: z.boolean(),
+          feasible: z.boolean(),
+          necessary: z.boolean(),
+          singular: z.boolean(),
+          unambiguous: z.boolean(),
+          verifiable: z.boolean(),
+        }),
+      }),
+      temperature: 0.2,
+      prompt: getRequirementsEvaluation(requirements.text),
+      system: systemEvaluator
+    })
 
-  //   const {object} = await generateObject({
-  //     model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
-  //     schema: z.object({
-  //       reasoning: z.string(),
-  //       score: z.object({
+    if(object.score.appropriate && object.score.complete && object.score.conforming && object.score.correct && object.score.feasible && object.score.necessary && object.score.singular && object.score.unambiguous && object.score.verifiable){
+     return requirements.text;
+    }
 
-  //       })
-  //       isSuitable: z.boolean()
-  //     }),
-  //     temperature: 0.2,
-  //     prompt: getRequirementsEvaluation(requirements.text),
-  //     system: systemEvaluator
-  //   })
-  // } while (attempts < MAX_ITERATIONS);
+    attempts++;
 
-  const result = streamText({
-    model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
-    temperature: 0.8,
-    maxSteps: 5,
-    system: systemRequirementsEngineer,
-    prompt: generateRequirements(problemKnowledge.text, extractProblem.text, messages[0].content)
-  });
+    console.log(`tentativa: ${attempts}}`,object);
+    
 
-  return result.toDataStreamResponse();
+  } while (attempts < MAX_ITERATIONS);
+
+  // const result = streamText({
+  //   model: myProvider.languageModel(DEFAULT_CHAT_MODEL),
+  //   temperature: 0.8,
+  //   maxSteps: 5,
+  //   system: systemRequirementsEngineer,
+  //   prompt: generateRequirements(problemKnowledge.text, extractProblem.text, messages[0].content)
+  // });
+
+  return requirements.text;
 }

@@ -6,12 +6,12 @@ import { Brightness4, Brightness7 } from '@mui/icons-material';
 import { MemoizedMarkdown } from '../../components/memoized-markdown';
 
 //TODO: introduzir google gemini
-//TODO: melhorarar visualização da mensagem do bot/usuário
+//TODO: melhorar visualização da mensagem do bot/usuário
 //TODO: Dar feedback enquanto chat estiver gerando a resposta
 //TODO: guardrail - testar
 //TODO: executar geração de objeto no onFinish() do usechat?
 const Chat = () => {
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
+  const { messages, input, handleInputChange, handleSubmit, status } = useChat();
 
   const { mode, setMode } = useColorScheme();
   if (!mode) {
