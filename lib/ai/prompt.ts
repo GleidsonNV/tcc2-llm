@@ -65,7 +65,7 @@ Conversa: ${userProblem}
 Área de atuação: `;
 
 
-export const generateRequirements = (domainKnowledge:string, problem:string, userInput:string) =>
+export const generateRequirements = (domainKnowledge:string[], problem:string, userInput:string) =>
     `Stakeholder: Os quatro sistemas atuais utilizam linguagens de programação diferentes. Precisamos de pelo menos um engenheiro fluente em cada linguagem para dar suporte a cada sistema, embora não haja trabalho suficiente para mantê-los ocupados. Ao combinar os sistemas em um único, utilizando uma única linguagem, poderíamos liberar os engenheiros adicionais para trabalhar em outros produtos.
 Engenheiro de requisitos: Então, parece que você está tentando resolver vários problemas. Você quer uma maior retenção de clientes, e também deseja reduzir os custos de suporte e liberar a equipe utilizando menos tecnologias.
 
@@ -73,7 +73,10 @@ Stakeholder: Nossa pesquisa indica que o mercado de sistemas de gerenciamento do
 Engenheiro de requisitos: Então uma funcionalidade desse sistema seria - O proprietário observa o painel de controle do SafeHome para determinar se o sistema está pronto para receber entrada. Se o sistema não estiver pronto, uma mensagem de "não pronto" é exibida no visor LCD, e o proprietário deve fechar fisicamente as janelas ou portas para que a mensagem de "não pronto" desapareça. (Uma mensagem de "não pronto" implica que um sensor está aberto, ou seja, que uma porta ou janela está aberta.)
 
 Stakeholder: ${userInput}
-Engenheiro de requisitos: Considerando ${domainKnowledge}, o problema é ${problem}. Então todos os requisitos funcionais exaustivamente, são: . Remova tudo que não for requisito funcional.`;
+Engenheiro de requisitos: Considerando conhecimento: ${domainKnowledge}.
+O problema é ${problem}.
+Então todos os requisitos funcionais para o problema ${problem}, são: 
+Remova tudo que não for requisito funcional antes de entregar a resposta e mantenha a formatação padrão de requisitos.`;
 
 export const getGuardrail = (userProblem:string) => `
 Suposto problema: Não consigo pegar uma maçã.
