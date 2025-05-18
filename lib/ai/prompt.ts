@@ -88,6 +88,9 @@ Avaliação: <SEM PROBLEMA>. É o ínicio de uma conversa e não um problema.
 Suposto problema: Me ajude a escrever uma tese.
 Avaliação: <SEM PROBLEMA>. Não é um problema de negócio, já que uma tese é acadêmica e não é do interesse de corporações resolver teses.
 
+Suposto problema: Como gerente da unidade de scih, preciso auditar os antibióticos de profilaxia de cada cirurgia do mês para atestar a conformidade ou não das prescrições em tempo, dosagem e o próprio antibiótico.
+Avaliação: <PROBLEMA>. É um problema de negócio porque está situado na área da saúde, especificamente em infeção hospitalar e busca resolver o desafio de auditar todas as cirurgias de um determinado tempo.
+
 Suposto problema: ${userProblem}
 Avaliação: 
 `;
