@@ -13,15 +13,42 @@ import {
   CssBaseline,
   useColorScheme,
   CircularProgress,
+  Grid,
+  InputAdornment,
+  Typography,
+  Snackbar,
+  Alert,
+  AlertTitle,
 } from "@mui/material";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
 import { MemoizedMarkdown } from "../../components/memoized-markdown";
+import SendIcon from "@mui/icons-material/Send";
+import { useCallback, useState } from "react";
 
 //TODO: introduzir google gemini
 //TODO: executar geração de objeto no onFinish() do usechat?
 const Chat = () => {
-  const { messages, input, handleInputChange, handleSubmit, status } =
-    useChat();
+  const [showError, setShowError] = useState(false);
+
+  const {
+    messages,
+    setMessages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    status,
+  } = useChat({
+    onError: (error) => {
+      setShowError(true);
+      const timer = setTimeout(handleCloseError, 7000);
+      return () => clearTimeout(timer);
+    },
+  });
+
+  const handleCloseError = useCallback(() => {
+    setShowError(false);
+    setMessages([]);
+  }, [setMessages]);
 
   const { mode, setMode } = useColorScheme();
   if (!mode) {
@@ -30,6 +57,21 @@ const Chat = () => {
 
   return (
     <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+      <Snackbar
+        open={showError}
+        autoHideDuration={7000}
+        onClose={handleCloseError}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          severity="error"
+          onClose={handleCloseError}
+          sx={{ width: "100%" }}
+        >
+          <AlertTitle>Erro</AlertTitle>
+          Ocorreu um erro. O chat será limpo.
+        </Alert>
+      </Snackbar>
       <Box sx={{ display: "flex", justifyContent: "flex-end", padding: 1 }}>
         <IconButton
           onClick={() => setMode(mode === "dark" ? "light" : "dark")}
@@ -50,10 +92,11 @@ const Chat = () => {
       >
         <Box
           sx={{
-            flexGrow: 1,
+            flex: 1,
             overflowY: "auto",
+            padding: 2,
             display: "flex",
-            flexDirection: "column-reverse",
+            flexDirection: "column",
           }}
         >
           {status === "submitted" ? (
@@ -80,25 +123,40 @@ const Chat = () => {
           )}
         </Box>
 
-        <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
-          <TextField
-            fullWidth
-            multiline
-            label="Descreva seu problema"
-            variant="outlined"
-            value={input}
-            onChange={handleInputChange}
-            sx={{ backgroundColor: "background.paper" }}
-          />
-          <Button
-            disabled={status === "submitted" || status === "streaming"}
-            variant="contained"
-            onClick={handleSubmit}
-            sx={{ height: "100%" }}
-          >
-            Enviar
-          </Button>
-        </Box>
+        <Grid container spacing={2} sx={{ marginTop: 2 }}>
+          <Grid item xs={10}>
+            <TextField
+              fullWidth
+              multiline
+              maxRows={4}
+              label="Descreva seu problema"
+              variant="outlined"
+              value={input}
+              onChange={handleInputChange}
+              sx={{ backgroundColor: "background.paper" }}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        edge="end"
+                        color="primary"
+                        disabled={
+                          !input.trim() ||
+                          status === "submitted" ||
+                          status === "streaming"
+                        }
+                        onClick={handleSubmit}
+                      >
+                        <SendIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+          </Grid>
+        </Grid>
       </Container>
     </Box>
   );
