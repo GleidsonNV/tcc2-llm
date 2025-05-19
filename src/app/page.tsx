@@ -4,7 +4,6 @@ import { useChat } from "@ai-sdk/react";
 import {
   Container,
   TextField,
-  Button,
   Paper,
   IconButton,
   Box,
@@ -15,7 +14,6 @@ import {
   CircularProgress,
   Grid,
   InputAdornment,
-  Typography,
   Snackbar,
   Alert,
   AlertTitle,
@@ -38,7 +36,7 @@ const Chat = () => {
     handleSubmit,
     status,
   } = useChat({
-    onError: (error) => {
+    onError: () => {
       setShowError(true);
       const timer = setTimeout(handleCloseError, 7000);
       return () => clearTimeout(timer);
