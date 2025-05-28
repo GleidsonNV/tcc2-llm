@@ -83,8 +83,6 @@ export const generateRequirements = (
     .map((evaluation) => `${evaluation.requirement}: ${JSON.stringify(evaluation.score)}`)
     .join(', ');
 
-    console.log(`inside prompt`,requirementsEvaluation);
-    
   return `Stakeholder: Os quatro sistemas atuais utilizam linguagens de programação diferentes. Precisamos de pelo menos um engenheiro fluente em cada linguagem para dar suporte a cada sistema, embora não haja trabalho suficiente para mantê-los ocupados. Ao combinar os sistemas em um único, utilizando uma única linguagem, poderíamos liberar os engenheiros adicionais para trabalhar em outros produtos.
 Engenheiro de requisitos: Então, parece que você está tentando resolver vários problemas. Você quer uma maior retenção de clientes, e também deseja reduzir os custos de suporte e liberar a equipe utilizando menos tecnologias.
 

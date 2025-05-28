@@ -28,7 +28,6 @@ export async function POST(req: Request) {
   const MAX_ITERATIONS = 3;
 
   try {
-    console.log('testing new provider',selectedModelIdentifier);
     
     const extractProblem = await generateObject({
       model: myProvider.languageModel(selectedModelIdentifier),
