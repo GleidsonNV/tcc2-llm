@@ -9,6 +9,6 @@ export function cn(...inputs: ClassValue[]) {
 export function getPreviousMessages(messages: Message[]) {
   return messages
     .slice(0, messages.length - 1)
-    .map((e: any, i: number) => `indext: ${i}; role: ${e.role}; input: ${e.content};`)
+    .map((e: Message, i: number) => `indext: ${i}; role: ${e.role}; input: ${e.content};`)
     .join("\n");
 }
