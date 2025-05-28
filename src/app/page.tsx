@@ -17,6 +17,11 @@ import {
   Snackbar,
   Alert,
   AlertTitle,
+  FormControl,
+  MenuItem,
+  Select,
+  InputLabel,
+  SelectChangeEvent,
 } from "@mui/material";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
 import { MemoizedMarkdown } from "../../components/memoized-markdown";
@@ -27,6 +32,7 @@ import { useCallback, useState } from "react";
 //TODO: executar geração de objeto no onFinish() do usechat?
 const Chat = () => {
   const [showError, setShowError] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<string>("mistral");
 
   const {
     messages,
@@ -36,6 +42,9 @@ const Chat = () => {
     handleSubmit,
     status,
   } = useChat({
+    body: {
+      model: selectedModel,
+    },
     onError: () => {
       setShowError(true);
       const timer = setTimeout(handleCloseError, 7000);
@@ -47,6 +56,11 @@ const Chat = () => {
     setShowError(false);
     setMessages([]);
   }, [setMessages]);
+
+  const handleModelChange = (event: SelectChangeEvent<string>) => {
+    const newModel = event.target.value;
+    setSelectedModel(newModel);
+  };
 
   const { mode, setMode } = useColorScheme();
   if (!mode) {
@@ -70,7 +84,28 @@ const Chat = () => {
           Ocorreu um erro. O chat será limpo.
         </Alert>
       </Snackbar>
-      <Box sx={{ display: "flex", justifyContent: "flex-end", padding: 1 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between", 
+          alignItems: "center",
+          padding: 1,
+          borderBottom: mode === "dark" ? "1px solid #424242" : "1px solid #e0e0e0", 
+        }}
+      >
+        <FormControl sx={{ m: 1, minWidth: 150 }} size="small">
+          <InputLabel id="model-select-label">AI Model</InputLabel>
+          <Select
+            labelId="model-select-label"
+            id="model-select"
+            value={selectedModel}
+            label="AI Model"
+            onChange={handleModelChange}
+          >
+            <MenuItem value="mistralProvider">Mistral</MenuItem>
+            <MenuItem value="googleProvider">Google Gemini</MenuItem>
+          </Select>
+        </FormControl>
         <IconButton
           onClick={() => setMode(mode === "dark" ? "light" : "dark")}
           color="inherit"
@@ -122,7 +157,7 @@ const Chat = () => {
         </Box>
 
         <Grid container spacing={2} sx={{ marginTop: 2 }}>
-          <Grid item xs={10}>
+          <Grid size={12}>
             <TextField
               fullWidth
               multiline
