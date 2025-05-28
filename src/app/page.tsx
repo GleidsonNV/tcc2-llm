@@ -32,7 +32,7 @@ import { useCallback, useState } from "react";
 //TODO: executar geração de objeto no onFinish() do usechat?
 const Chat = () => {
   const [showError, setShowError] = useState(false);
-  const [selectedModel, setSelectedModel] = useState<string>("mistral");
+  const [selectedModel, setSelectedModel] = useState<string>("mistralProvider");
 
   const {
     messages,
@@ -87,10 +87,11 @@ const Chat = () => {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between", 
+          justifyContent: "space-between",
           alignItems: "center",
           padding: 1,
-          borderBottom: mode === "dark" ? "1px solid #424242" : "1px solid #e0e0e0", 
+          borderBottom:
+            mode === "dark" ? "1px solid #424242" : "1px solid #e0e0e0",
         }}
       >
         <FormControl sx={{ m: 1, minWidth: 150 }} size="small">
