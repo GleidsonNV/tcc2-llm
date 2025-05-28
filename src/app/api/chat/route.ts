@@ -25,7 +25,7 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
   const { messages, model: selectedModelIdentifier = DEFAULT_CHAT_MODEL } = await req.json();
   let attempts = 0;
-  const MAX_ITERATIONS = 3;
+  const MAX_ITERATIONS = 1;
 
   try {
     
