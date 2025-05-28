@@ -6,17 +6,13 @@ import {
   generateRequirements,
   generateSpecificDomain,
   getGuardrail,
-  getRequirementsEvaluation,
   getUserInputPrompt,
   systemBirdEye,
-  systemEvaluator,
   systemExtractor,
   systemRequirementsEngineer,
 } from "../../../../lib/ai/prompt";
 import {
   RequirementsEvaluation,
-  EvaluationSchema,
-  RequirementEvaluation,
 } from "../../../../lib/ai/types";
 import { z } from "zod";
 
@@ -105,7 +101,7 @@ export async function POST(req: Request) {
     console.log(`Problem knowledge : ${problemKnowledge.object.knowledge}`);
 
     let requirements;
-    let evaluationResults: RequirementsEvaluation = {
+    const evaluationResults: RequirementsEvaluation = {
       evaluations: [],
       isQuantitySuitable: false,
     };
