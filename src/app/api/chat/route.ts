@@ -126,43 +126,44 @@ export async function POST(req: Request) {
         },
       });
 
-      await requirements.consumeStream();
+      return requirements.toDataStreamResponse();
+      // await requirements.consumeStream();
 
-      const { object } = await generateObject({
-        model: myProvider.languageModel(selectedModelIdentifier),
-        schema: EvaluationSchema,
-        temperature: 0.2,
-        prompt: getRequirementsEvaluation(await requirements.text),
-        system: systemEvaluator,
-        schemaName: "evaluator",
-        schemaDescription:
-          "An array of evaluation objects. Each object captures whether a generated requirement is appropriate, complete, conforming, correct, feasible, necessary, singular, unambiguous, and verifiable.",
-      });
+      // const { object } = await generateObject({
+      //   model: myProvider.languageModel(selectedModelIdentifier),
+      //   schema: EvaluationSchema,
+      //   temperature: 0.2,
+      //   prompt: getRequirementsEvaluation(await requirements.text),
+      //   system: systemEvaluator,
+      //   schemaName: "evaluator",
+      //   schemaDescription:
+      //     "An array of evaluation objects. Each object captures whether a generated requirement is appropriate, complete, conforming, correct, feasible, necessary, singular, unambiguous, and verifiable.",
+      // });
 
-      evaluationResults = object;
+      // evaluationResults = object;
 
-      const allOriginalEvaluationsArePerfect =
-        evaluationResults.evaluations.length > 0 &&
-        evaluationResults.evaluations.every(
-          (evaluation: RequirementEvaluation) => {
-            const { score } = evaluation;
-            return (
-              score.appropriate &&
-              score.complete &&
-              score.conforming &&
-              score.correct &&
-              score.feasible &&
-              score.necessary &&
-              score.singular &&
-              score.unambiguous &&
-              score.verifiable
-            );
-          }
-        );
+      // const allOriginalEvaluationsArePerfect =
+      //   evaluationResults.evaluations.length > 0 &&
+      //   evaluationResults.evaluations.every(
+      //     (evaluation: RequirementEvaluation) => {
+      //       const { score } = evaluation;
+      //       return (
+      //         score.appropriate &&
+      //         score.complete &&
+      //         score.conforming &&
+      //         score.correct &&
+      //         score.feasible &&
+      //         score.necessary &&
+      //         score.singular &&
+      //         score.unambiguous &&
+      //         score.verifiable
+      //       );
+      //     }
+      //   );
 
-      if (allOriginalEvaluationsArePerfect) {
-        return requirements.toDataStreamResponse();
-      }
+      // if (allOriginalEvaluationsArePerfect) {
+      //   return requirements.toDataStreamResponse();
+      // }
 
       attempts++;
     } while (attempts < MAX_ITERATIONS);
