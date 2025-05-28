@@ -1,4 +1,9 @@
-export const systemExtractor = 'Você é um excelente engenheiro de requisitos e precisa extrair o problema a partir da descrição do usuário';
+import { getPreviousMessages } from "@/lib/utils";
+import { Message } from "ai";
+import { RequirementsEvaluation } from "./types";
+
+export const systemExtractor =
+  "Você é um excelente engenheiro de requisitos e precisa extrair o problema a partir da descrição do usuário";
 export const systemRequirementsEngineer = `Você é um experiente engenheiro de requisitos com vasto conhecimento sobre diversos domínios de negócio. Você levanta requisitos focado em usabilidade do usuário, focado em como o usuário vai utilizar a solução que será construído. Seus requisitos são completos, não ambíguos e claros. Você identifica stakeholders, seus objetivos e trabalha a partir disso.
 Alguns dos requisitos funcionais que você levanta são: 
 'O usuário deve receber notificações por email sobre atualizações da ocorrência.' Este requisito descreve uma ação temporal que o sistema deve realizar.
@@ -18,19 +23,22 @@ Viável - O requisito é realizável dentro das restrições do sistema, conside
 Necessário - O requisito define um aspecto essencial do sistema e é irremovível sem causar uma deficiência.
 Singular - O requisito define apenas um aspecto do sistema.
 Não ambíguo - O requisito está claramente declarado, é compreensível e permite apenas uma interpretação.
-Verificável - O requisito está formulado de maneira que seu cumprimento possa ser comprovado ou, na melhor das hipóteses, medido.`;
+Verificável - O requisito está formulado de maneira que seu cumprimento possa ser comprovado ou, na melhor das hipóteses, medido.
+Além do conteúdo, você avalia a quantidade de requisitos.`;
 
-export const extractUserProblem = (userInput:string) => 
-    `input: Como um usuario da comunidade, desejo notificar os interessados sobre pista molhada para evitar acidentes. 
+export const extractUserProblem = (userInput: string) =>
+  `input: Como um usuario da comunidade, desejo notificar os interessados sobre pista molhada para evitar acidentes. 
 Problema: O integrante da comunidade precisa avisar às pessoas que fazem parte da comunidade sobre a pista molhada, então o problema dele é notificar várias pessoas sobre um evento
 input: Como funcionário da qualidade, desejo que o plano de ação da notificação de ocorrência seja avaliada a fim de averiguar se o plano de açaõ foi eficaz. 
 Problema: O funcionário precisa saber se o plano de ação elaborado e posto em prática surtiu efeito, então o problema é assegurar que o plano de ação foi eficaz
 input: Preciso  de um dashboard para visualizar informações de horas de meus funcionários.
 Problema: O desconhecido precisa ver informações de horas seus funcionários, mas não necessariamente em um dashboard, provavelmente para saber como está a produtividade de sua equipe, então o problema é visualizar dados de produtividade da equipe
 input: ${userInput}. 
-Problema: `
+Problema: `;
 
-export const generateProblemKnowledge = (problemDomain: string) =>`Input: A Grécia é maior que o México.
+export const generateProblemKnowledge = (
+  problemDomain: string
+) => `Input: A Grécia é maior que o México.
 Conhecimento: A Grécia tem aproximadamente 131.957 km², enquanto o México tem aproximadamente 1.964.375 km², tornando o México 1.389% maior que a Grécia.
 
 Input: Os óculos sempre embaçam.
@@ -64,9 +72,20 @@ Conversa: Não consigo modificar fórmulas das medicações em estoque.
 Conversa: ${userProblem}
 Área de atuação: `;
 
+export const generateRequirements = (
+  domainKnowledge: string[],
+  problem: string,
+  userInput: string,
+  evaluationsArray: RequirementsEvaluation
+) => {
+  const { evaluations } = evaluationsArray;
+  const requirementsEvaluation = evaluations
+    .map((evaluation) => `${evaluation.requirement}: ${JSON.stringify(evaluation.score)}`)
+    .join(', ');
 
-export const generateRequirements = (domainKnowledge:string[], problem:string, userInput:string) =>
-    `Stakeholder: Os quatro sistemas atuais utilizam linguagens de programação diferentes. Precisamos de pelo menos um engenheiro fluente em cada linguagem para dar suporte a cada sistema, embora não haja trabalho suficiente para mantê-los ocupados. Ao combinar os sistemas em um único, utilizando uma única linguagem, poderíamos liberar os engenheiros adicionais para trabalhar em outros produtos.
+    console.log(`inside prompt`,requirementsEvaluation);
+    
+  return `Stakeholder: Os quatro sistemas atuais utilizam linguagens de programação diferentes. Precisamos de pelo menos um engenheiro fluente em cada linguagem para dar suporte a cada sistema, embora não haja trabalho suficiente para mantê-los ocupados. Ao combinar os sistemas em um único, utilizando uma única linguagem, poderíamos liberar os engenheiros adicionais para trabalhar em outros produtos.
 Engenheiro de requisitos: Então, parece que você está tentando resolver vários problemas. Você quer uma maior retenção de clientes, e também deseja reduzir os custos de suporte e liberar a equipe utilizando menos tecnologias.
 
 Stakeholder: Nossa pesquisa indica que o mercado de sistemas de gerenciamento doméstico está crescendo a uma taxa de 40 por cento ao ano. A primeira função do SafeHome que devemos lançar no mercado deve ser a função de segurança doméstica. A maioria das pessoas está familiarizada com "sistemas de alarme", então isso seria uma venda fácil. Também podemos considerar usar controle por voz do sistema, utilizando alguma tecnologia como o Alexa.
@@ -75,10 +94,14 @@ Engenheiro de requisitos: Então uma funcionalidade desse sistema seria - O prop
 Stakeholder: ${userInput}
 Engenheiro de requisitos: Considerando conhecimento: ${domainKnowledge}.
 O problema é ${problem}.
-Então todos os requisitos funcionais para o problema ${problem}, são: 
-Remova tudo que não for requisito funcional antes de entregar a resposta e mantenha a formatação padrão de requisitos.`;
+Os requisitos foram avaliados da seguinte forma: ${requirementsEvaluation}
+E a avaliação da quantidade de requisitos foi: ${evaluationsArray.isQuantitySuitable}
+Então todos os requisitos funcionais, são: 
+Remova tudo que não for requisito funcional antes de entregar a resposta e mantenha a formatação padrão de requisitos com RF1, RF2, RF3...
+Formate a resposta em markdown separando os RF`;
+};
 
-export const getGuardrail = (userProblem:string) => `
+export const getGuardrail = (userProblem: string) => `
 Suposto problema: Não consigo pegar uma maçã.
 Avaliação: <SEM PROBLEMA>.Não é um problema de negócio. Pegar uma maçã é um problema trivial no máximo e não deve ser considerado.
 
@@ -107,3 +130,10 @@ Avaliação: O requisito não é verificável e nem completo e não ambíguo. Ma
 
 Requisito: ${requirements}
 Avaliação: `;
+
+export const getUserInputPrompt = (
+  messages: Message[]
+) => `previous messages: ${getPreviousMessages(messages)}
+              current message: ${messages.at(-1)?.content}
+          
+          Use your previous messages and users previous messages along with current messages to generate a response when you find it relevant. Messages are tagged with role. Think step by step `;
