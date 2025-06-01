@@ -28,3 +28,12 @@ export const EvaluationSchema = z.object({
 });
 
 export type RequirementsEvaluation = z.infer<typeof EvaluationSchema>;
+
+export const combinedInitialAnalysisSchema = z.object({
+  problem: z.string().describe("The core problem extracted from the user's input."),
+  isProblem: z.boolean().describe("Whether the extracted text constitutes a valid business problem."),
+  domain: z.string().describe("The specific business domain related to the problem."),
+  reasoningProblemExtraction: z.string().describe("Brief reasoning for how the problem was extracted."),
+  reasoningGuardrail: z.string().describe("Brief reasoning for the guardrail decision (isProblem)."),
+  reasoningDomainIdentification: z.string().describe("Brief reasoning for identifying the domain.")
+});
