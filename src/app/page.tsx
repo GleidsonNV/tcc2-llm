@@ -22,7 +22,6 @@ import {
   Select,
   InputLabel,
   SelectChangeEvent,
-  useTheme,
 } from "@mui/material";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
 import { MemoizedMarkdown } from "../../components/memoized-markdown";
