@@ -26,12 +26,14 @@ Verificável - O requisito está formulado de maneira que seu cumprimento possa 
 Além do conteúdo, você avalia a quantidade de requisitos.`;
 
 export const extractUserProblem = (userInput: string) =>
-  `input: Como um usuario da comunidade, desejo notificar os interessados sobre pista molhada para evitar acidentes. 
+  `Exemplos:
+input: Como um usuario da comunidade, desejo notificar os interessados sobre pista molhada para evitar acidentes. 
 Problema: O integrante da comunidade precisa avisar às pessoas que fazem parte da comunidade sobre a pista molhada, então o problema dele é notificar várias pessoas sobre um evento
 input: Como funcionário da qualidade, desejo que o plano de ação da notificação de ocorrência seja avaliada a fim de averiguar se o plano de açaõ foi eficaz. 
 Problema: O funcionário precisa saber se o plano de ação elaborado e posto em prática surtiu efeito, então o problema é assegurar que o plano de ação foi eficaz
 input: Preciso  de um dashboard para visualizar informações de horas de meus funcionários.
 Problema: O desconhecido precisa ver informações de horas seus funcionários, mas não necessariamente em um dashboard, provavelmente para saber como está a produtividade de sua equipe, então o problema é visualizar dados de produtividade da equipe
+Complete:
 input: ${userInput}. 
 Problema: `;
 
@@ -61,6 +63,7 @@ Input: ${problemDomain}
 Conhecimento: `;
 
 export const generateSpecificDomain = (userProblem: string) => `
+Exemplos:
 Conversa: Sou gerente de um setor de enfermagem e preciso organizar meu trabalho para me sentir no controle.
 Área de atuação: Gestão de enfermagem. O gerente é do setor de enfermagem e precisa organizar seu trabalho de maneira geral, então o domínio do negócio é Gestão de Enfermagem;
 
@@ -70,6 +73,7 @@ Conversa: Preciso de dados de auditoria que incluem o número total de resíduos
 Conversa: Não consigo modificar fórmulas das medicações em estoque.
 Área de atuação: Farmácia. O profissional precisa modificar dados específicos de medicações, então sua área de domínio é farmácia.
 
+Complete:
 Conversa: ${userProblem}
 Área de atuação: `;
 
@@ -87,12 +91,14 @@ export const generateRequirements = (
     )
     .join(", ");
 
-  return `Stakeholder: Os quatro sistemas atuais utilizam linguagens de programação diferentes. Precisamos de pelo menos um engenheiro fluente em cada linguagem para dar suporte a cada sistema, embora não haja trabalho suficiente para mantê-los ocupados. Ao combinar os sistemas em um único, utilizando uma única linguagem, poderíamos liberar os engenheiros adicionais para trabalhar em outros produtos.
+  return `Exemplos de uma conversa entre stakeholders e engenheiros:
+  Stakeholder: Os quatro sistemas atuais utilizam linguagens de programação diferentes. Precisamos de pelo menos um engenheiro fluente em cada linguagem para dar suporte a cada sistema, embora não haja trabalho suficiente para mantê-los ocupados. Ao combinar os sistemas em um único, utilizando uma única linguagem, poderíamos liberar os engenheiros adicionais para trabalhar em outros produtos.
 Engenheiro de requisitos: Então, parece que você está tentando resolver vários problemas. Você quer uma maior retenção de clientes, e também deseja reduzir os custos de suporte e liberar a equipe utilizando menos tecnologias.
 
 Stakeholder: Nossa pesquisa indica que o mercado de sistemas de gerenciamento doméstico está crescendo a uma taxa de 40 por cento ao ano. A primeira função do SafeHome que devemos lançar no mercado deve ser a função de segurança doméstica. A maioria das pessoas está familiarizada com "sistemas de alarme", então isso seria uma venda fácil. Também podemos considerar usar controle por voz do sistema, utilizando alguma tecnologia como o Alexa.
 Engenheiro de requisitos: Então uma funcionalidade desse sistema seria - O proprietário observa o painel de controle do SafeHome para determinar se o sistema está pronto para receber entrada. Se o sistema não estiver pronto, uma mensagem de "não pronto" é exibida no visor LCD, e o proprietário deve fechar fisicamente as janelas ou portas para que a mensagem de "não pronto" desapareça. (Uma mensagem de "não pronto" implica que um sensor está aberto, ou seja, que uma porta ou janela está aberta.)
 
+A situação a ser resolvida a seguir:
 Stakeholder: ${userInput}
 Considerando conhecimento: ${domainKnowledge.join("")}.
 O problema é ${problem}.
@@ -100,14 +106,18 @@ Os requisitos foram avaliados da seguinte forma: ${requirementsEvaluation}
 E a avaliação da quantidade de requisitos foi: ${
     evaluationsArray.isQuantitySuitable
   }
-Remova tudo que não for requisito funcional antes de entregar a resposta e mantenha a formatação padrão de requisitos com RF1, RF2, RF3...
-Apresente os requisitos funcionais em uma lista ordenada
+R
 Então todos os requisitos funcionais, são: 
 Engenheiro de requisitos: 
+
+
+emova tudo que não for requisito funcional antes de entregar a resposta e mantenha a formatação padrão de requisitos com RF1, RF2, RF3...
+Apresente os requisitos funcionais em uma lista ordenada.
 `;
 };
 
 export const getGuardrail = (userProblem: string) => `
+Exemplos:
 Suposto problema: Não consigo pegar uma maçã.
 Avaliação: <SEM PROBLEMA>.Não é um problema de negócio. Pegar uma maçã é um problema trivial no máximo e não deve ser considerado.
 
@@ -120,6 +130,7 @@ Avaliação: <SEM PROBLEMA>. Não é um problema de negócio, já que uma tese �
 Suposto problema: Como gerente da unidade de scih, preciso auditar os antibióticos de profilaxia de cada cirurgia do mês para atestar a conformidade ou não das prescrições em tempo, dosagem e o próprio antibiótico.
 Avaliação: <PROBLEMA>. É um problema de negócio porque está situado na área da saúde, especificamente em infeção hospitalar e busca resolver o desafio de auditar todas as cirurgias de um determinado tempo.
 
+Complete:
 Suposto problema: ${userProblem}
 Avaliação: 
 `;

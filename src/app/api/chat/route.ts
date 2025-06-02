@@ -21,12 +21,12 @@ import { z } from "zod";
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const { messages, model: selectedModelIdentifier = DEFAULT_CHAT_MODEL } = await req.json();
+  const { messages, model: selectedModelIdentifier = DEFAULT_CHAT_MODEL } =
+    await req.json();
   let attempts = 0;
-  const MAX_ITERATIONS = 1;
+  const MAX_ITERATIONS = 0;
 
   try {
-    
     const extractProblem = await generateObject({
       model: myProvider.languageModel(selectedModelIdentifier),
       temperature: 0.2,
@@ -34,8 +34,7 @@ export async function POST(req: Request) {
       prompt: extractUserProblem(getUserInputPrompt(messages)),
       system: systemExtractor,
       schemaName: "problem extraction",
-      schemaDescription:
-        "an object to capture a problem from user input",
+      schemaDescription: "an object to capture a problem from user input",
     });
 
     console.log(`User problem : ${extractProblem.object.problem}`);
@@ -66,8 +65,6 @@ export async function POST(req: Request) {
       schemaDescription:
         "general and specific knowledge about the domain, what challenges it faces, what is the current state of the domain, what is the best practices, what is aleady common ground",
     });
-
-    console.log(`Problem knowledge : ${problemKnowledge.object.knowledge}`);
 
     let requirements;
     let evaluationResults: RequirementsEvaluation = {
