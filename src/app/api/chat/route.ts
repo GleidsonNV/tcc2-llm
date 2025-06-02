@@ -4,16 +4,12 @@ import {
   extractUserProblem,
   generateProblemKnowledge,
   generateRequirements,
-  getRequirementsEvaluation,
   getUserInputPrompt,
-  systemEvaluator,
   systemExtractor,
   systemRequirementsEngineer,
 } from "../../../../lib/ai/prompt";
 import {
   combinedInitialAnalysisSchema,
-  EvaluationSchema,
-  RequirementEvaluation,
   RequirementsEvaluation,
 } from "../../../../lib/ai/types";
 import { z } from "zod";
@@ -23,8 +19,8 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
   const { messages, model: selectedModelIdentifier = DEFAULT_CHAT_MODEL } =
     await req.json();
-  let attempts = 0;
-  const MAX_ITERATIONS = 0;
+  // let attempts = 0;
+  // const MAX_ITERATIONS = 0;
 
   try {
     const extractProblem = await generateObject({
@@ -66,68 +62,83 @@ export async function POST(req: Request) {
         "general and specific knowledge about the domain, what challenges it faces, what is the current state of the domain, what is the best practices, what is aleady common ground",
     });
 
-    let requirements;
-    let evaluationResults: RequirementsEvaluation = {
+    const evaluationResults: RequirementsEvaluation = {
       evaluations: [],
       isQuantitySuitable: false,
     };
-    do {
-      requirements = streamText({
-        model: myProvider.languageModel(selectedModelIdentifier),
-        temperature: 0.8,
-        maxSteps: 5,
-        system: systemRequirementsEngineer,
-        prompt: generateRequirements(
-          problemKnowledge.object.knowledge,
-          extractProblem.object.problem,
-          getUserInputPrompt(messages),
-          evaluationResults
-        ),
-        onError: (error) => {
-          console.log(error);
-        },
-      });
+    // do {
+    //   requirements = streamText({
+    //     model: myProvider.languageModel(selectedModelIdentifier),
+    //     temperature: 0.8,
+    //     maxSteps: 5,
+    //     system: systemRequirementsEngineer,
+    //     prompt: generateRequirements(
+    //       problemKnowledge.object.knowledge,
+    //       extractProblem.object.problem,
+    //       getUserInputPrompt(messages),
+    //       evaluationResults
+    //     ),
+    //     onError: (error) => {
+    //       console.log(error);
+    //     },
+    //   });
 
-      await requirements.consumeStream();
+    //   await requirements.consumeStream();
 
-      const { object } = await generateObject({
-        model: myProvider.languageModel(selectedModelIdentifier),
-        schema: EvaluationSchema,
-        temperature: 0.2,
-        prompt: getRequirementsEvaluation(await requirements.text),
-        system: systemEvaluator,
-        schemaName: "evaluator",
-        schemaDescription:
-          "An array of evaluation objects. Each object captures whether a generated requirement is appropriate, complete, conforming, correct, feasible, necessary, singular, unambiguous, and verifiable.",
-      });
+    //   const { object } = await generateObject({
+    //     model: myProvider.languageModel(selectedModelIdentifier),
+    //     schema: EvaluationSchema,
+    //     temperature: 0.2,
+    //     prompt: getRequirementsEvaluation(await requirements.text),
+    //     system: systemEvaluator,
+    //     schemaName: "evaluator",
+    //     schemaDescription:
+    //       "An array of evaluation objects. Each object captures whether a generated requirement is appropriate, complete, conforming, correct, feasible, necessary, singular, unambiguous, and verifiable.",
+    //   });
 
-      evaluationResults = object;
+    //   evaluationResults = object;
 
-      const allOriginalEvaluationsArePerfect =
-        evaluationResults.evaluations.length > 0 &&
-        evaluationResults.evaluations.every(
-          (evaluation: RequirementEvaluation) => {
-            const { score } = evaluation;
-            return (
-              score.appropriate &&
-              score.complete &&
-              score.conforming &&
-              score.correct &&
-              score.feasible &&
-              score.necessary &&
-              score.singular &&
-              score.unambiguous &&
-              score.verifiable
-            );
-          }
-        );
+    //   const allOriginalEvaluationsArePerfect =
+    //     evaluationResults.evaluations.length > 0 &&
+    //     evaluationResults.evaluations.every(
+    //       (evaluation: RequirementEvaluation) => {
+    //         const { score } = evaluation;
+    //         return (
+    //           score.appropriate &&
+    //           score.complete &&
+    //           score.conforming &&
+    //           score.correct &&
+    //           score.feasible &&
+    //           score.necessary &&
+    //           score.singular &&
+    //           score.unambiguous &&
+    //           score.verifiable
+    //         );
+    //       }
+    //     );
 
-      if (allOriginalEvaluationsArePerfect) {
-        return requirements.toDataStreamResponse();
-      }
+    //   if (allOriginalEvaluationsArePerfect) {
+    //     return requirements.toDataStreamResponse();
+    //   }
 
-      attempts++;
-    } while (attempts < MAX_ITERATIONS);
+    //   attempts++;
+    // } while (attempts < MAX_ITERATIONS);
+
+    const requirements = streamText({
+      model: myProvider.languageModel(selectedModelIdentifier),
+      temperature: 0.8,
+      maxSteps: 5,
+      system: systemRequirementsEngineer,
+      prompt: generateRequirements(
+        problemKnowledge.object.knowledge,
+        extractProblem.object.problem,
+        getUserInputPrompt(messages),
+        evaluationResults
+      ),
+      onError: (error) => {
+        console.log(error);
+      },
+    });
 
     return requirements.toDataStreamResponse();
   } catch (error) {
