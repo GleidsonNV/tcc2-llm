@@ -2,8 +2,7 @@ import { getPreviousMessages } from "@/lib/utils";
 import { Message } from "ai";
 import { RequirementsEvaluation } from "./types";
 
-export const systemExtractor =
-  `Você é um excelente engenheiro de requisitos e precisa extrair o problema a partir da descrição do usuário. 
+export const systemExtractor = `Você é um excelente engenheiro de requisitos e precisa extrair o problema a partir da descrição do usuário. 
   Você consegue identificar áreas de atuação profissional específicas a partir de uma descrição.
   Você consegue determinar se o problema é relevante o suficiente para ser levantado requisitos. `;
 export const systemRequirementsEngineer = `Você é um experiente engenheiro de requisitos com vasto conhecimento sobre diversos domínios de negócio. Você levanta requisitos focado em usabilidade do usuário, focado em como o usuário vai utilizar a solução que será construído. Seus requisitos são completos, não ambíguos e claros. Você identifica stakeholders, seus objetivos e trabalha a partir disso.
@@ -38,7 +37,9 @@ Problema: `;
 
 export const generateProblemKnowledge = (
   problemDomain: string
-) => `Input: A Grécia é maior que o México.
+) => `Complete o último conhecimento faltando.
+
+Input: A Grécia é maior que o México.
 Conhecimento: A Grécia tem aproximadamente 131.957 km², enquanto o México tem aproximadamente 1.964.375 km², tornando o México 1.389% maior que a Grécia.
 
 Input: Os óculos sempre embaçam.
@@ -80,8 +81,11 @@ export const generateRequirements = (
 ) => {
   const { evaluations } = evaluationsArray;
   const requirementsEvaluation = evaluations
-    .map((evaluation) => `${evaluation.requirement}: ${JSON.stringify(evaluation.score)}`)
-    .join(', ');
+    .map(
+      (evaluation) =>
+        `${evaluation.requirement}: ${JSON.stringify(evaluation.score)}`
+    )
+    .join(", ");
 
   return `Stakeholder: Os quatro sistemas atuais utilizam linguagens de programação diferentes. Precisamos de pelo menos um engenheiro fluente em cada linguagem para dar suporte a cada sistema, embora não haja trabalho suficiente para mantê-los ocupados. Ao combinar os sistemas em um único, utilizando uma única linguagem, poderíamos liberar os engenheiros adicionais para trabalhar em outros produtos.
 Engenheiro de requisitos: Então, parece que você está tentando resolver vários problemas. Você quer uma maior retenção de clientes, e também deseja reduzir os custos de suporte e liberar a equipe utilizando menos tecnologias.
@@ -90,13 +94,17 @@ Stakeholder: Nossa pesquisa indica que o mercado de sistemas de gerenciamento do
 Engenheiro de requisitos: Então uma funcionalidade desse sistema seria - O proprietário observa o painel de controle do SafeHome para determinar se o sistema está pronto para receber entrada. Se o sistema não estiver pronto, uma mensagem de "não pronto" é exibida no visor LCD, e o proprietário deve fechar fisicamente as janelas ou portas para que a mensagem de "não pronto" desapareça. (Uma mensagem de "não pronto" implica que um sensor está aberto, ou seja, que uma porta ou janela está aberta.)
 
 Stakeholder: ${userInput}
-Engenheiro de requisitos: Considerando conhecimento: ${domainKnowledge}.
+Considerando conhecimento: ${domainKnowledge.join("")}.
 O problema é ${problem}.
 Os requisitos foram avaliados da seguinte forma: ${requirementsEvaluation}
-E a avaliação da quantidade de requisitos foi: ${evaluationsArray.isQuantitySuitable}
-Então todos os requisitos funcionais, são: 
+E a avaliação da quantidade de requisitos foi: ${
+    evaluationsArray.isQuantitySuitable
+  }
 Remova tudo que não for requisito funcional antes de entregar a resposta e mantenha a formatação padrão de requisitos com RF1, RF2, RF3...
-Formate a resposta em markdown separando os RFs em cada linha`;
+Apresente os requisitos funcionais em uma lista ordenada
+Então todos os requisitos funcionais, são: 
+Engenheiro de requisitos: 
+`;
 };
 
 export const getGuardrail = (userProblem: string) => `
