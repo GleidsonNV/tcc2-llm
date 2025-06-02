@@ -32,13 +32,6 @@ import { useCallback, useState } from "react";
 //TODO: introduzir google gemini
 //TODO: executar geração de objeto no onFinish() do usechat?
 const Chat = () => {
-  const currentTheme = useTheme();
-  // Log this right before the return statement or early in the component body
-  console.log(
-    "THEME SEEN BY CHAT - primary.main:",
-    currentTheme.palette.primary.main
-  );
-  console.log("THEME SEEN BY CHAT - mode:", currentTheme.palette.mode);
   const [showError, setShowError] = useState(false);
   const [selectedModel, setSelectedModel] = useState<string>("mistralProvider");
 
