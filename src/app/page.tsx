@@ -22,6 +22,7 @@ import {
   Select,
   InputLabel,
   SelectChangeEvent,
+  useTheme,
 } from "@mui/material";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
 import { MemoizedMarkdown } from "../../components/memoized-markdown";
@@ -31,6 +32,13 @@ import { useCallback, useState } from "react";
 //TODO: introduzir google gemini
 //TODO: executar geração de objeto no onFinish() do usechat?
 const Chat = () => {
+  const currentTheme = useTheme();
+  // Log this right before the return statement or early in the component body
+  console.log(
+    "THEME SEEN BY CHAT - primary.main:",
+    currentTheme.palette.primary.main
+  );
+  console.log("THEME SEEN BY CHAT - mode:", currentTheme.palette.mode);
   const [showError, setShowError] = useState(false);
   const [selectedModel, setSelectedModel] = useState<string>("mistralProvider");
 
@@ -143,8 +151,8 @@ const Chat = () => {
                   marginBottom: 1,
                   padding: 2,
                   backgroundColor:
-                    message.role === "user" ? "palette.background.paper" : "",
-                  color: "text.primary",
+                    message.role === "user" ? "primary.main" : "secondary.main",
+                  color: "primary.contrastText",
                   borderRadius: 2,
                   maxWidth: "75%",
                   alignSelf:
@@ -198,14 +206,55 @@ const Chat = () => {
 
 const theme = createTheme({
   colorSchemes: {
-    dark: true,
-  },
-  palette: {
-    primary: {
-      main: "#4d4443",
+    light: {
+      palette: {
+        primary: {
+          main: "#ebdfde",
+          contrastText: "#333333",
+        },
+        secondary: {
+          main: "#dbb3be",
+          contrastText: "#ffffff",
+        },
+        background: {
+          default: "#f8f6f5",
+          paper: "#ffffff",
+        },
+        text: {
+          primary: "#3e3837",
+          secondary: "#6c6564",
+          disabled: "#a09594",
+        },
+        error: { main: "#d32f2f" },
+        warning: { main: "#f57c00" },
+        info: { main: "#1976d2" },
+        success: { main: "#2e7d32" },
+      },
     },
-    secondary: {
-      main: "#434c4d",
+    dark: {
+      palette: {
+        primary: {
+          main: "#3f3f3f",
+          contrastText: "#e0e0e0",
+        },
+        secondary: {
+          main: "#2a2a2a",
+          contrastText: "#bdbdbd",
+        },
+        background: {
+          default: "#1c1b1a",
+          paper: "#2b2928",
+        },
+        text: {
+          primary: "#f5f5f5",
+          secondary: "#b0a8a7",
+          disabled: "#6e6a69",
+        },
+        error: { main: "#e57373" },
+        warning: { main: "#ffb74d" },
+        info: { main: "#64b5f6" },
+        success: { main: "#81c784" },
+      },
     },
   },
 });
